@@ -1,0 +1,4 @@
+services:
+  plugin.manager.required_api:
+    class: Drupal\required_api\RequiredApiManager
+    parent: default_plugin_manager

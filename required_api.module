@@ -1,0 +1,31 @@
+<?php
+
+/**
+ * @file
+ * Allows certain user roles to be exempt from required fields
+ */
+
+/**
+ * Implements hook_help().
+ */
+function required_api_help($path, $arg) {
+  switch ($path) {
+
+    case 'admin/help#required_api':
+      $output = '';
+      $output .= '<p>' . t('The Required by role module provides an easy and flexible way for developers and site builders to determine whether a field (instance) should be <em>required</em> by all users or just for selected user roles.') . '</p>';
+      return $output;
+  }
+}
+
+/**
+ * Implements hook_field_info_alter().
+ */
+function required_api_field_info_alter(&$info) {
+
+  foreach ($info as $field_type => $field_type_info) {
+    $info[$field_type]['instance_settings'] += array(
+      'required_api' => array(),
+    );
+  }
+}
