@@ -2,3 +2,9 @@ services:
   plugin.manager.required_api:
     class: Drupal\required_api\RequiredApiManager
     parent: default_plugin_manager
+  plugin.manager.required_api.required:
+    class: Drupal\required_api\RequiredManager
+    parent: default_plugin_manager
+  # plugin.manager.required_api.widget:
+  #   class: Drupal\required_api\RequiredApiWidgetPluginManager
+  #   parent: field.widget

@@ -5,7 +5,7 @@
  * Contains \Drupal\required_api\RequiredPluginInterface.
  */
 
-namespace Drupal\required_api\RequiredPluginInterface;
+namespace Drupal\required_api\Plugin;
 
 use Drupal\Component\Plugin\PluginInspectionInterface;
 use Drupal\Component\Plugin\ConfigurablePluginInterface;
@@ -28,6 +28,6 @@ interface RequiredPluginInterface extends PluginInspectionInterface, Configurabl
    * @return bool
    *   TRUE on required. FALSE otherwise.
    */
-  public function isRequired(FieldInstance $field, $context);
+  public function isRequired(FieldInstance $field, $account);
 
 }
