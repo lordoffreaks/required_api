@@ -1,0 +1,10 @@
+<?php
+
+
+/**
+ * Implements hook_install().
+ */
+function required_api_install() {
+  $config = \Drupal::config('required_api.plugins');
+  $config->set('default_plugin', 'default')->save();
+}

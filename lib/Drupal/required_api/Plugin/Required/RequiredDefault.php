@@ -15,7 +15,7 @@ use Drupal\required_api\Plugin\Required\RequiredBase;
  *
  * @Required(
  *   id = "default",
- *   label = @Translation("Required default"),
+ *   label = @Translation("Core"),
  *   description = @Translation("Required based on core implementation.")
  * )
  */

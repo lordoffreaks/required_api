@@ -5,6 +5,9 @@ services:
   plugin.manager.required_api.required:
     class: Drupal\required_api\RequiredManager
     parent: default_plugin_manager
-  # plugin.manager.required_api.widget:
-  #   class: Drupal\required_api\RequiredApiWidgetPluginManager
-  #   parent: field.widget
+  # Replaces the core field.plugin service
+  plugin.manager.field.widget:
+     class: Drupal\required_api\RequiredApiWidgetPluginManager
+     arguments: ['@container.namespaces', '@cache.field', '@module_handler', '@language_manager', '@plugin.manager.field.field_type']
+     calls:
+     - [setRequiredManager, ['@plugin.manager.required_api.required']]

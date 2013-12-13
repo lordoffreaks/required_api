@@ -15,6 +15,13 @@ abstract class RequiredBase extends PluginBase implements RequiredPluginInterfac
   /**
    * {@inheritdoc}
    */
+  public function getLabel() {
+    return $this->label;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getConfiguration() {
     return array(
       'uuid' => $this->getUuid(),

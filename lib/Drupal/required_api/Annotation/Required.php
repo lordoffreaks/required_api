@@ -16,8 +16,32 @@ use Drupal\Component\Annotation\Plugin;
  *
  * @Annotation
  */
-class Required extends RequiredApi {
+class Required extends Plugin {
 
-  public $type = 'Required';
+  /**
+   * The plugin ID.
+   *
+   * @var string
+   */
+  public $id;
+
+  /**
+   * The human-readable name of the api.
+   *
+   * @ingroup plugin_translatable
+   *
+   * @var \Drupal\Core\Annotation\Translation
+   */
+  public $label;
+
+  /**
+   * A brief description of the api.
+   *
+   *
+   * @ingroup plugin_translatable
+   *
+   * @var \Drupal\Core\Annotation\Translation (optional)
+   */
+  public $description = '';
 
 }

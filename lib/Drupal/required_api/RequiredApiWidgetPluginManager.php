@@ -12,6 +12,7 @@ use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Language\LanguageManager;
 use Drupal\Core\Field\WidgetPluginManager;;
+use Drupal\required_api\RequiredPluginBag;
 
 /**
  * Plugin type manager for field widgets.
@@ -19,32 +20,32 @@ use Drupal\Core\Field\WidgetPluginManager;;
 class RequiredApiWidgetPluginManager extends WidgetPluginManager {
 
   /**
-   * The required api manager.
-   *
-   * @var \Drupal\required_api\RequiredManager
-   */
-  protected $requiredApiManager;
-
-  /**
-   * Collection of required plugins.
-   *
-   * @var array
-   */
-  protected $requiredPluginDefinition;
-
-
-  /**
    * The method manager.
    *
    * @var \Drupal\Core\Field\RequiredApiMethodsPluginManager
    */
 
-  public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler, LanguageManager $language_manager, FieldTypePluginManager $field_type_manager) {
+  /**
+   * The plugin bag that holds the required plugin for the widgets.
+   *
+   * @var \Drupal\Component\Plugin\DefaultSinglePluginBag
+   */
+  protected $requiredPluginBag;
 
-    parent::__construct($namespaces, $cache_backend, $module_handler, $language_manager, $field_type_manager);
+  /**
+   * Sets the required manager.
+   *
+   * @param \Drupal\required_api\RequiredManager
+   *   The required manager to set.
+   */
+  public function setRequiredManager(RequiredManager $requiredManager) {
 
-    $this->requiredApiManager = \Drupal::service('plugin.manager.required_api.required');
-    $this->requiredPluginDefinition = $this->requiredApiManager->getDefinitions();
+    $instance_ids = array_keys($requiredManager->getDefinitions());
+    $configuration = array();
+
+    $pluginBag = new RequiredPluginBag($requiredManager, $instance_ids, $configuration);
+
+    $this->requiredPluginBag = $pluginBag;
 
   }
 
@@ -71,13 +72,19 @@ class RequiredApiWidgetPluginManager extends WidgetPluginManager {
    */
   public function getInstance(array $options) {
 
+    $field = $options['field_definition'];
+
+    if(isset($options['account'])){
+      $account = $options['account'];
+    } else {
+      $account = \Drupal::currentUser();
+    }
+
     // Work out here the required property
-    $account = \Drupal::currentUser();
-    $required_plugin = $this->getRequiredPlugin($options['field_definition']);
+    $required = $this->getRequiredPlugin($field)->isRequired($field, $account);
 
-    $is_required = $required_plugin->isRequired($options['field_definition'], $account);
-
-    $options['field_definition']->required = $is_required;
+    // Set the required property
+    $options['field_definition']->required = $required;
 
     return parent::getInstance($options);
 
@@ -90,7 +97,9 @@ class RequiredApiWidgetPluginManager extends WidgetPluginManager {
       'field_definition' => $field_definition,
     );
 
-    return $this->requiredApiManager->getInstance($options);
+    $this->requiredPluginBag->setConfiguration($options);
+
+    return $this->requiredPluginBag->get($options['plugin_id']);
   }
 
 }
