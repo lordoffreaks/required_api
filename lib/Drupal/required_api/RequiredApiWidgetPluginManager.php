@@ -30,7 +30,7 @@ class RequiredApiWidgetPluginManager extends WidgetPluginManager {
    *
    * @var array
    */
-  protected $requiredPlugins;
+  protected $requiredPluginDefinition;
 
 
   /**
@@ -44,7 +44,7 @@ class RequiredApiWidgetPluginManager extends WidgetPluginManager {
     parent::__construct($namespaces, $cache_backend, $module_handler, $language_manager, $field_type_manager);
 
     $this->requiredApiManager = \Drupal::service('plugin.manager.required_api.required');
-    $this->requiredPlugins = $this->requiredApiManager->getDefinitions();
+    $this->requiredPluginDefinition = $this->requiredApiManager->getDefinitions();
 
   }
 
@@ -73,9 +73,9 @@ class RequiredApiWidgetPluginManager extends WidgetPluginManager {
 
     // Work out here the required property
     $account = \Drupal::currentUser();
-    $required_plugin = $this->get_required_plugin($options['field_definition']);
+    $required_plugin = $this->getRequiredPlugin($options['field_definition']);
 
-    $is_required = $required_plugin->isRequired($options['field_definition'], $account, array());
+    $is_required = $required_plugin->isRequired($options['field_definition'], $account);
 
     $options['field_definition']->required = $is_required;
 
@@ -83,7 +83,7 @@ class RequiredApiWidgetPluginManager extends WidgetPluginManager {
 
   }
 
-  public function get_required_plugin(FieldInstance $field_definition){
+  public function getRequiredPlugin(FieldInstance $field_definition){
 
     $options = array(
       'plugin_id' => 'required_by_role',
