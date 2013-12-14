@@ -97,7 +97,6 @@ function required_api_form_field_ui_field_edit_form_alter(&$form, $form_state) {
     '#type' => 'radios',
     '#options' => $plugins,
     '#default_value' => $plugin,
-    '#weight' => $form['field']['settings']['#weight'] + 1,
   );
 
 }
