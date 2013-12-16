@@ -20,15 +20,16 @@ use Drupal\required_api\RequiredPluginBag;
 class RequiredApiWidgetPluginManager extends WidgetPluginManager {
 
   /**
-   * The method manager.
+   * The required plugin manager.
    *
-   * @var \Drupal\Core\Field\RequiredApiMethodsPluginManager
+   * @var \Drupal\required_api\RequiredManager
    */
+  protected $requiredManager;
 
   /**
-   * The plugin bag that holds the required plugin for the widgets.
+   * The plugin bag holding the required plugin for the widgets.
    *
-   * @var \Drupal\Component\Plugin\DefaultSinglePluginBag
+   * @var \Drupal\required_api\RequiredPluginBag
    */
   protected $requiredPluginBag;
 
@@ -38,19 +39,36 @@ class RequiredApiWidgetPluginManager extends WidgetPluginManager {
    * @param \Drupal\required_api\RequiredManager
    *   The required manager to set.
    */
-  public function setRequiredManager(RequiredManager $requiredManager) {
+  public function setRequiredManager(RequiredManager $manager) {
 
-    $instance_ids = array_keys($requiredManager->getDefinitions());
-    $configuration = array();
+    $this->requiredManager = $manager;
 
-    $pluginBag = new RequiredPluginBag($requiredManager, $instance_ids, $configuration);
-
+    $pluginBag = $this->getRequiredPluginBag();
     $this->requiredPluginBag = $pluginBag;
 
   }
 
   /**
-   * Overrides PluginManagerBase::getInstance().
+   * Gets the plugin bag.
+   *
+   * @return \Drupal\required_api\RequiredPluginBag
+   *   A RequiredPluginBag object.
+   */
+  public function getRequiredPluginBag() {
+
+    if(!$this->pluginBag){
+
+      $instance_ids = array_keys($this->requiredManager->getDefinitions());
+      $configuration = array();
+      $this->pluginBag = new RequiredPluginBag($manager, $instance_ids, $configuration);
+    }
+
+    return $this->pluginBag;
+
+  }
+
+  /**
+   * Overrides WidgetPluginManager::getInstance().
    *
    * @param array $options
    *   An array with the following key/value pairs:
@@ -92,14 +110,14 @@ class RequiredApiWidgetPluginManager extends WidgetPluginManager {
 
   public function getRequiredPlugin(FieldInstance $field_definition){
 
-    $options = array(
+    $configuration = array(
       'plugin_id' => 'required_by_role',
       'field_definition' => $field_definition,
     );
 
-    $this->requiredPluginBag->setConfiguration($options);
+    $this->requiredPluginBag->setConfiguration($configuration);
 
-    return $this->requiredPluginBag->get($options['plugin_id']);
+    return $this->requiredPluginBag->get($configuration['plugin_id']);
   }
 
 }
