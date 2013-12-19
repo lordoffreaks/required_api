@@ -16,9 +16,13 @@ use Drupal\Component\Plugin\DefaultSinglePluginBag;
 class RequiredPluginBag extends DefaultSinglePluginBag {
 
   /**
-   * {@inheritdoc}
+   * Helper method to set the configuration when it´s invoked.
    *
-   * @return \Drupal\block\BlockPluginInterface
+   * @param array $configuration
+   *   The configuration for the current field.
+   *
+   * @return \Drupal\required_api\RequiredPluginBag
+   *   An instance of the required plugin bag.
    */
   public function setConfiguration($configuration) {
     $this->configuration = $configuration;

@@ -20,7 +20,7 @@ use \Drupal\Component\Plugin\DefaultSinglePluginBag;
 class RequiredManager extends DefaultPluginManager {
 
   /**
-   * {@inheritdoc}
+   * DefaultPluginManager overriden.
    */
   public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, LanguageManager $language_manager, ModuleHandlerInterface $module_handler) {
 
@@ -33,7 +33,6 @@ class RequiredManager extends DefaultPluginManager {
 
   /**
    * Overrides PluginManagerBase::getInstance().
-   *
    */
   public function getInstance(array $options) {
 

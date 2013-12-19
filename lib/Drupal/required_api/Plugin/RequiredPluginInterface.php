@@ -20,7 +20,7 @@ interface RequiredPluginInterface extends PluginInspectionInterface, Configurabl
    * Determines wether a field is required or not.
    *
    * @param \Drupal\field\Entity\FieldInstance $field
-   *   An image file object.
+   *   A field instance.
    *
    * @return bool
    *   TRUE on required. FALSE otherwise.
@@ -31,7 +31,7 @@ interface RequiredPluginInterface extends PluginInspectionInterface, Configurabl
    * Return a form element use in form_field_ui_field_instance_edit_form.
    *
    * @param \Drupal\field\Entity\FieldInstance $field
-   *   An image file object.
+   *   A field instance.
    *
    * @return array
    *   Form element to configure the required property.

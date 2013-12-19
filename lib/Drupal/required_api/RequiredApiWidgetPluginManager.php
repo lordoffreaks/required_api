@@ -36,15 +36,13 @@ class RequiredApiWidgetPluginManager extends WidgetPluginManager {
   /**
    * Sets the required manager.
    *
-   * @param \Drupal\required_api\RequiredManager
+   * @param \Drupal\required_api\RequiredManager $manager
    *   The required manager to set.
    */
   public function setRequiredManager(RequiredManager $manager) {
 
     $this->requiredManager = $manager;
-
-    $pluginBag = $this->getRequiredPluginBag();
-    $this->requiredPluginBag = $pluginBag;
+    $this->requiredPluginBag = $this->getRequiredPluginBag();
 
   }
 
@@ -56,14 +54,14 @@ class RequiredApiWidgetPluginManager extends WidgetPluginManager {
    */
   public function getRequiredPluginBag() {
 
-    if(!$this->pluginBag){
+    if (!$this->requiredPluginBag) {
 
       $instance_ids = array_keys($this->requiredManager->getDefinitions());
       $configuration = array();
-      $this->pluginBag = new RequiredPluginBag($manager, $instance_ids, $configuration);
+      $this->requiredPluginBag = new RequiredPluginBag($manager, $instance_ids, $configuration);
     }
 
-    return $this->pluginBag;
+    return $this->requiredPluginBag;
 
   }
 
@@ -92,23 +90,33 @@ class RequiredApiWidgetPluginManager extends WidgetPluginManager {
 
     $field = $options['field_definition'];
 
-    if(isset($options['account'])){
+    if (isset($options['account'])) {
       $account = $options['account'];
-    } else {
+    }
+    else {
       $account = \Drupal::currentUser();
     }
 
-    // Work out here the required property
+    // Work out here the required property.
     $required = $this->getRequiredPlugin($field)->isRequired($field, $account);
 
-    // Set the required property
+    // Set the required property.
     $options['field_definition']->required = $required;
 
     return parent::getInstance($options);
 
   }
 
-  public function getRequiredPlugin(FieldInstance $field_definition){
+  /**
+   * Helper function to the the instance of the plugin.
+   *
+   * @param FieldInstance $field_definition
+   *   the field instance
+   *
+   * @return \Drupal\required_api\Plugin/Required
+   *   Instancitad plugin.
+   */
+  public function getRequiredPlugin(FieldInstance $field_definition) {
 
     $configuration = array(
       'plugin_id' => 'required_by_role',
