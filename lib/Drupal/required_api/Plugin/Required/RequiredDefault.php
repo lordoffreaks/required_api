@@ -24,32 +24,26 @@ class RequiredDefault extends RequiredBase {
   /**
    * Determines wether a field is required or not.
    *
-   * @param array $context
-   *   An array of contexts provided by the implementation.
-   *
    * @param \Drupal\field\Entity\FieldInstance $field
    *   An image file object.
    *
    * @return bool
    *   TRUE on required. FALSE otherwise.
    */
-  public function isRequired(FieldInstance $field, $account){
+  public function isRequired(FieldInstance $field, $account) {
     return $field->isRequired();
   }
 
   /**
    * Determines wether a field is required or not.
    *
-   * @param array $context
-   *   An array of contexts provided by the implementation.
-   *
    * @param \Drupal\field\Entity\FieldInstance $field
    *   An image file object.
    *
    * @return bool
    *   TRUE on required. FALSE otherwise.
    */
-  public function requiredFormElement(FieldInstance $field){
+  public function requiredFormElement(FieldInstance $field) {
 
     $element = array(
       '#type' => 'checkbox',

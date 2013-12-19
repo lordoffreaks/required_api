@@ -13,41 +13,28 @@ use Drupal\required_api\Plugin\RequiredPluginInterface;
 abstract class RequiredBase extends PluginBase implements RequiredPluginInterface {
 
   /**
-   * {@inheritdoc}
+   * Helper method to get the label.
    */
   public function getLabel() {
     return $this->label;
   }
 
   /**
-   * {@inheritdoc}
+   * Required method to get the configuration.
    */
   public function getConfiguration() {
-    return array(
-      'uuid' => $this->getUuid(),
-      'id' => $this->getPluginId(),
-      'weight' => $this->getWeight(),
-      'data' => $this->configuration,
-    );
+    return array();
   }
 
   /**
-   * {@inheritdoc}
+   * Required method to set the configuration.
    */
   public function setConfiguration(array $configuration) {
-    $configuration += array(
-      'data' => array(),
-      'uuid' => '',
-      'weight' => '',
-    );
-    $this->configuration = $configuration['data'] + $this->defaultConfiguration();
-    $this->uuid = $configuration['uuid'];
-    $this->weight = $configuration['weight'];
     return $this;
   }
 
   /**
-   * {@inheritdoc}
+   * Required method to set the default configuration.
    */
   public function defaultConfiguration() {
     return array();

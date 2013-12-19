@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * Allows certain user roles to be exempt from required fields
@@ -54,14 +53,14 @@ function required_api_form_field_ui_field_instance_edit_form_alter(&$form, $form
   $field_definition = $form_state['instance'];
   $field_name = $field_definition->getName();
 
-  $requiredApiManager = \Drupal::service('plugin.manager.required_api.required');
+  $required_api_manager = \Drupal::service('plugin.manager.required_api.required');
 
   $options = array(
     'plugin_id' => 'required_by_role',
     'field_definition' => $field_definition,
   );
 
-  $plugin = $requiredApiManager->getInstance($options);
+  $plugin = $required_api_manager->getInstance($options);
 
   $element = $plugin->requiredFormElement($field_definition);
 
@@ -88,7 +87,7 @@ function required_api_form_field_ui_field_edit_form_alter(&$form, $form_state) {
   $plugin = $form['#field']->getSetting('required_plugin');
 
   // If wasn´t set per field basic fallback to the global plugin.
-  if(!$plugin){
+  if (!$plugin) {
     $plugin = \Drupal::config('required_api.plugins')->get('default_plugin');
   }
 

@@ -18,7 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class RequiredDefaultPluginForm extends ConfigFormBase {
 
-    /**
+  /**
    * Constructs a RequiredDefaultPluginForm object.
    *
    * @param \Drupal\Core\Config\ConfigFactory $config_factory
@@ -26,20 +26,21 @@ class RequiredDefaultPluginForm extends ConfigFormBase {
    * @param \Drupal\Core\Config\Context\ContextInterface $context
    *   The configuration context used for this configuration object.
    * @param \Drupal\Core\Cache\CacheBackendInterface $page_cache
+   *   The page cache
    */
   public function __construct(ConfigFactory $config_factory, ContextInterface $context, CacheBackendInterface $page_cache) {
     parent::__construct($config_factory, $context);
   }
 
   /**
-   * {@inheritdoc}
+   * Required method to provide the form_id.
    */
   public function getFormId() {
     return 'required_default_plugin';
   }
 
   /**
-   * {@inheritdoc}
+   * Required method to provide the actual form.
    */
   public function buildForm(array $form, array &$form_state) {
 
@@ -64,7 +65,7 @@ class RequiredDefaultPluginForm extends ConfigFormBase {
   }
 
   /**
-   * {@inheritdoc}
+   * Submit function for the form.
    */
   public function submitForm(array &$form, array &$form_state) {
 
