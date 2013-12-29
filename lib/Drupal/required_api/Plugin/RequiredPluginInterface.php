@@ -28,7 +28,7 @@ interface RequiredPluginInterface extends PluginInspectionInterface, Configurabl
   public function isRequired(FieldInstance $field, $account);
 
   /**
-   * Return a form element use in form_field_ui_field_instance_edit_form.
+   * Return a form element to use in form_field_ui_field_instance_edit_form.
    *
    * @param \Drupal\field\Entity\FieldInstance $field
    *   A field instance.

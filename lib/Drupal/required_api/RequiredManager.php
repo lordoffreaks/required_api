@@ -40,4 +40,26 @@ class RequiredManager extends DefaultPluginManager {
     return $this->createInstance($plugin_id, $options);
   }
 
+  /**
+   * Provides the defintions ids.
+   */
+  public function getDefinitionsIds() {
+    return array_keys($this->getDefinitions());
+  }
+
+  /**
+   * Provides the defintions as options just to inject to a select element.
+   */
+  public function getDefinitionsAsOptions() {
+
+    $definitions = $this->getDefinitions();
+    $plugins = array();
+
+    foreach ($definitions as $plugin_id => $definition) {
+      $plugins[$plugin_id] = $definition['label'];
+    }
+
+    return $plugins;
+  }
+
 }

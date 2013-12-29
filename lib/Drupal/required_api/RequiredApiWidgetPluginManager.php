@@ -56,7 +56,7 @@ class RequiredApiWidgetPluginManager extends WidgetPluginManager {
 
     if (!$this->requiredPluginBag) {
 
-      $instance_ids = array_keys($this->requiredManager->getDefinitions());
+      $instance_ids = $this->requiredManager->getDefinitionsIds();
       $configuration = array();
       $this->requiredPluginBag = new RequiredPluginBag($this->requiredManager, $instance_ids, $configuration);
     }
