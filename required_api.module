@@ -25,7 +25,7 @@ function required_api_help($path, $arg) {
  */
 function required_api_permission() {
   return array(
-    'administer required settings' =>  array(
+    'administer required settings' => array(
       'title' => t('Administer required settings'),
       'description' => t('Administer global required settings.'),
     ),
@@ -61,7 +61,9 @@ function required_api_field_info_alter(&$info) {
 }
 
 /**
- * Implements hook_form_FORM_ID_alter() from field_ui_field_instance_edit_form.
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Applies to FORM_ID field_ui_field_instance_edit_form.
  */
 function required_api_form_field_ui_field_instance_edit_form_alter(&$form, $form_state) {
 
