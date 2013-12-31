@@ -33,22 +33,6 @@ function required_api_permission() {
 }
 
 /**
- * Implements hook_menu().
- */
-function required_api_menu() {
-  $items = array();
-
-  $items['admin/config/user-interface/required'] = array(
-    'title' => 'Required strategy',
-    'description' => 'Choose the default required strategy for fields.',
-    'route_name' => 'required_api.default_plugin',
-    'weight' => -20,
-  );
-
-  return $items;
-}
-
-/**
  * Implements hook_field_info_alter().
  */
 function required_api_field_info_alter(&$info) {
