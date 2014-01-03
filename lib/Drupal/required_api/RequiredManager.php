@@ -7,12 +7,10 @@
 
 namespace Drupal\required_api;
 
-use Drupal\Component\Plugin\Factory\DefaultFactory;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Language\LanguageManager;
 use Drupal\Core\Plugin\DefaultPluginManager;
-use \Drupal\Component\Plugin\DefaultSinglePluginBag;
 
 /**
  * Manages required by role plugins.
@@ -36,8 +34,28 @@ class RequiredManager extends DefaultPluginManager {
    */
   public function getInstance(array $options) {
 
-    $plugin_id = $options['plugin_id'];
+    $plugin_id = $this->getPluginId($options['field_definition']);
     return $this->createInstance($plugin_id, $options);
+  }
+
+  /**
+   * Gets the plugin_id for this field definition, fallback to system default.
+   *
+   * @param \Drupal\field\Entity\FieldInstance $field
+   *   A field instance.
+   *
+   * @return string
+   *   The plugin id.
+   */
+  public function getPluginId(FieldInstance $field) {
+
+    $plugin_id = $field->getSetting('required_plugin');
+
+    if (!$plugin_id) {
+      $plugin_id = \Drupal::config('required_api.plugins')->get('default_plugin');
+    }
+
+    return $plugin_id;
   }
 
   /**

@@ -7,11 +7,11 @@
 namespace Drupal\required_api\Plugin\Required;
 
 use Drupal\Core\Plugin\PluginBase;
+use Drupal\field\Entity\FieldInstance;
 use Drupal\required_api\Plugin\RequiredPluginInterface;
 
 
 abstract class RequiredBase extends PluginBase implements RequiredPluginInterface {
-
 
   /**
    * Return a form element to use in form_field_ui_field_instance_edit_form.
@@ -23,6 +23,7 @@ abstract class RequiredBase extends PluginBase implements RequiredPluginInterfac
    *   Form element to configure the required property.
    */
   public function formElement(FieldInstance $field) {
+
     $element = $this->requiredFormElement($field);
 
     return $element + array(

@@ -7,12 +7,7 @@
 
 namespace Drupal\required_api;
 
-use Drupal\Component\Plugin\Factory\DefaultFactory;
-use Drupal\Core\Cache\CacheBackendInterface;
-use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\Core\Language\LanguageManager;
 use Drupal\Core\Field\WidgetPluginManager;;
-use Drupal\required_api\RequiredPluginBag;
 
 /**
  * Plugin type manager for field widgets.
@@ -27,42 +22,13 @@ class RequiredApiWidgetPluginManager extends WidgetPluginManager {
   protected $requiredManager;
 
   /**
-   * The plugin bag holding the required plugin for the widgets.
-   *
-   * @var \Drupal\required_api\RequiredPluginBag
-   */
-  protected $requiredPluginBag;
-
-  /**
    * Sets the required manager.
    *
    * @param \Drupal\required_api\RequiredManager $manager
    *   The required manager to set.
    */
   public function setRequiredManager(RequiredManager $manager) {
-
     $this->requiredManager = $manager;
-    $this->requiredPluginBag = $this->getRequiredPluginBag();
-
-  }
-
-  /**
-   * Gets the plugin bag.
-   *
-   * @return \Drupal\required_api\RequiredPluginBag
-   *   A RequiredPluginBag object.
-   */
-  public function getRequiredPluginBag() {
-
-    if (!$this->requiredPluginBag) {
-
-      $instance_ids = $this->requiredManager->getDefinitionsIds();
-      $configuration = array();
-      $this->requiredPluginBag = new RequiredPluginBag($this->requiredManager, $instance_ids, $configuration);
-    }
-
-    return $this->requiredPluginBag;
-
   }
 
   /**
@@ -89,43 +55,17 @@ class RequiredApiWidgetPluginManager extends WidgetPluginManager {
   public function getInstance(array $options) {
 
     $field = $options['field_definition'];
+    $options['account'] += \Drupal::currentUser();
 
-    if (isset($options['account'])) {
-      $account = $options['account'];
-    }
-    else {
-      $account = \Drupal::currentUser();
-    }
+    $plugin = $this->requiredManager->getInstance($options);
 
     // Work out here the required property.
-    $required = $this->getRequiredPlugin($field)->isRequired($field, $account);
+    $required = $plugin->isRequired($field, $options['account']);
 
     // Set the required property.
     $options['field_definition']->required = $required;
 
     return parent::getInstance($options);
-
-  }
-
-  /**
-   * Helper function to the the instance of the plugin.
-   *
-   * @param FieldInstance $field_definition
-   *   the field instance
-   *
-   * @return \Drupal\required_api\Plugin/Required
-   *   Instancitad plugin.
-   */
-  public function getRequiredPlugin(FieldInstance $field_definition) {
-
-    $configuration = array(
-      'plugin_id' => 'required_by_role',
-      'field_definition' => $field_definition,
-    );
-
-    $this->requiredPluginBag->setConfiguration($configuration);
-
-    return $this->requiredPluginBag->get($configuration['plugin_id']);
   }
 
 }

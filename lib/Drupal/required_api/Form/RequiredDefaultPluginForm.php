@@ -8,10 +8,6 @@
 namespace Drupal\required_api\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
-use Drupal\Core\Config\ConfigFactory;
-use Drupal\Core\Config\Context\ContextInterface;
-use Drupal\Core\Cache\CacheBackendInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Configure default required stratety for this site.
@@ -30,12 +26,8 @@ class RequiredDefaultPluginForm extends ConfigFormBase {
    */
   public function buildForm(array $form, array &$form_state) {
 
-    $definitions = \Drupal::service('plugin.manager.required_api.required')->getDefinitions();
-    $plugins = array();
-
-    foreach ($definitions as $plugin_id => $definition) {
-      $plugins[$plugin_id] = $definition['label'];
-    }
+    $required_manager = \Drupal::service('plugin.manager.required_api.required');
+    $plugins = $required_manager->getDefinitionsAsOptions();
 
     $config = $this->configFactory->get('required_api.plugins');
     $plugin = $config->get('default_plugin');

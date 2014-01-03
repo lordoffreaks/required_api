@@ -1,7 +1,8 @@
 <?php
 /**
  * @file
- * Allows certain user roles to be exempt from required fields
+ * Provides an unified API to find out if a field widget should be
+ * required or not based on contexts.
  */
 
 /**
@@ -12,10 +13,8 @@ function required_api_help($path, $arg) {
 
     case 'admin/help#required_api':
       $output = '';
-      $output .= '<p>' . t('The Required by role module provides an easy and
-        flexible way for developers and site builders to determine whether a
-        field (instance) should be <em>required</em> by all users or just for
-        selected user roles.') . '</p>';
+      $output .= '<p>' . t('The Required API module provides an API to find out
+        if a widget is requried or not.') . '</p>';
       return $output;
   }
 }
@@ -54,42 +53,42 @@ function required_api_form_field_ui_field_instance_edit_form_alter(&$form, $form
   $field_definition = $form_state['instance'];
   $field_name = $field_definition->getName();
 
-  $required_api_manager = \Drupal::service('plugin.manager.required_api.required');
-
-  // Caching the manager for AJAX calls.
-  $form['#required_api_manager'] = $required_api_manager;
-
-  $plugins = $required_api_manager->getDefinitionsAsOptions();
+  $manager = \Drupal::service('plugin.manager.required_api.required');
 
   if (!empty($form_state['values']['instance']['settings']['required_plugin'])) {
     $plugin_id = $form_state['values']['instance']['settings']['required_plugin'];
   }
   else {
-
-    $plugin_id = $field_definition->getSetting('required_plugin');
-
-    if (!$plugin_id) {
-      $plugin_id = \Drupal::config('required_api.plugins')->get('default_plugin');
-    }
-
+    $plugin_id = $manager->getPluginId($field_definition);
   }
 
-  $plugin = required_api_get_required_plugin($required_api_manager, $plugin_id, $field_definition);
+  $plugins = $manager->getDefinitionsAsOptions();
 
-  $form['instance']['required_plugin'] = array(
-    '#title' => t('Required strategy'),
-    '#type' => 'radios',
-    '#options' => $plugins,
-    '#default_value' => $plugin_id,
-    '#weight' => $form['instance']['required']['#weight'] - 1,
-    '#ajax' => array(
-      'callback' => 'require_api_element_ajax_callback',
-      'wrapper' => 'required-ajax-wrapper',
-      'effect' => 'fade',
-      'speed' => 'fast',
-    ),
-    '#parents' => array('instance', 'settings', 'required_plugin'),
+  $configuration = array(
+    'plugin_id' => $plugin_id,
+    'field_definition' => $field_definition,
   );
+
+  $plugin = $manager->getInstance($configuration);
+
+  if (count($plugins) > 1) {
+
+    $form['instance']['required_plugin'] = array(
+      '#title' => t('Choose a required strategy:'),
+      '#type' => 'radios',
+      '#options' => $plugins,
+      '#default_value' => $plugin_id,
+      '#weight' => $form['instance']['required']['#weight'] - 1,
+      '#ajax' => array(
+        'callback' => 'require_api_element_ajax_callback',
+        'wrapper' => 'required-ajax-wrapper',
+        'effect' => 'fade',
+        'speed' => 'fast',
+      ),
+      '#parents' => array('instance', 'settings', 'required_plugin'),
+    );
+
+  }
 
   $form['instance']['required'] = $plugin->formElement($field_definition);
 
@@ -97,22 +96,6 @@ function required_api_form_field_ui_field_instance_edit_form_alter(&$form, $form
   $form['instance']['default_value'][$field_name]['widget'][0]['#required'] = FALSE;
   $form['instance']['default_value'][$field_name]['widget'][0]['value']['#required'] = FALSE;
 
-}
-
-/**
- * Creates an instance of the required plugin.
- *
- * @return array
- *   The rendered parent page select element.
- */
-function required_api_get_required_plugin($manager, $plugin_id, $field_definition) {
-
-  $options = array(
-    'plugin_id' => $plugin_id,
-    'field_definition' => $field_definition,
-  );
-
-  return $manager->getInstance($options);
 }
 
 /**
