@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\required_api\RequiredApiManager.
+ * Contains \Drupal\required_api\RequiredManager.
  */
 
 namespace Drupal\required_api;
@@ -23,8 +23,6 @@ class RequiredManager extends DefaultPluginManager {
   public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, LanguageManager $language_manager, ModuleHandlerInterface $module_handler) {
 
     parent::__construct('Plugin/Required', $namespaces, 'Drupal\required_api\Annotation\Required');
-
-    $this->alterInfo($module_handler, 'required_api_required_info');
     $this->setCacheBackend($cache_backend, $language_manager, 'required_api_required_plugins');
 
   }

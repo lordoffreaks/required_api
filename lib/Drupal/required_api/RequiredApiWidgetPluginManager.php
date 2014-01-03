@@ -7,7 +7,8 @@
 
 namespace Drupal\required_api;
 
-use Drupal\Core\Field\WidgetPluginManager;;
+use Drupal\Core\Field\WidgetPluginManager;
+use Drupal\required_api\RequiredManager;
 
 /**
  * Plugin type manager for field widgets.
