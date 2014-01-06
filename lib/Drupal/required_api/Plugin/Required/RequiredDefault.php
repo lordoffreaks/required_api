@@ -7,6 +7,7 @@
 namespace Drupal\required_api\Plugin\Required;
 
 use Drupal\Core\Annotation\Translation;
+use Drupal\Core\Session\AccountInterface;
 use Drupal\field\Entity\FieldInstance;
 use Drupal\required_api\Annotation\Required;
 use Drupal\required_api\Plugin\Required\RequiredBase;
@@ -25,12 +26,12 @@ class RequiredDefault extends RequiredBase {
    * Determines wether a field is required or not.
    *
    * @param \Drupal\field\Entity\FieldInstance $field
-   *   An image file object.
+   *   A field instance object.
    *
    * @return bool
    *   TRUE on required. FALSE otherwise.
    */
-  public function isRequired(FieldInstance $field, $account) {
+  public function isRequired(FieldInstance $field, AccountInterface $account) {
     return $field->isRequired();
   }
 
@@ -38,7 +39,7 @@ class RequiredDefault extends RequiredBase {
    * Determines wether a field is required or not.
    *
    * @param \Drupal\field\Entity\FieldInstance $field
-   *   An image file object.
+   *   A field instance object.
    *
    * @return bool
    *   TRUE on required. FALSE otherwise.

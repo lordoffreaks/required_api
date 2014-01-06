@@ -56,7 +56,12 @@ class RequiredApiWidgetPluginManager extends WidgetPluginManager {
   public function getInstance(array $options) {
 
     $field = $options['field_definition'];
-    $options['account'] += \Drupal::currentUser();
+
+    $account = \Drupal::currentUser();
+
+    if (!isset($options['account'])) {
+      $options['account'] = \Drupal::currentUser();
+    }
 
     $plugin = $this->requiredManager->getInstance($options);
 

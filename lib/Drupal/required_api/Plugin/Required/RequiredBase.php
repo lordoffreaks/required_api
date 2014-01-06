@@ -43,13 +43,14 @@ abstract class RequiredBase extends PluginBase implements RequiredPluginInterfac
    * Required method to get the configuration.
    */
   public function getConfiguration() {
-    return array();
+    return $this->configuration;
   }
 
   /**
    * Required method to set the configuration.
    */
   public function setConfiguration(array $configuration) {
+    $this->configuration = $configuration;
     return $this;
   }
 
@@ -59,5 +60,4 @@ abstract class RequiredBase extends PluginBase implements RequiredPluginInterfac
   public function defaultConfiguration() {
     return array();
   }
-
 }
