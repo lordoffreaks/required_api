@@ -57,8 +57,6 @@ class RequiredApiWidgetPluginManager extends WidgetPluginManager {
 
     $field = $options['field_definition'];
 
-    $account = \Drupal::currentUser();
-
     if (!isset($options['account'])) {
       $options['account'] = \Drupal::currentUser();
     }
