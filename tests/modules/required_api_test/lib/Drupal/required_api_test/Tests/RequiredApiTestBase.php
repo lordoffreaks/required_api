@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\required_api\Tests\RequiredApiTestBase.
+ * Contains \Drupal\required_api_test\Tests\RequiredApiTestBase.
  */
 
-namespace Drupal\required_api\Tests;
+namespace Drupal\required_api_test\Tests;
 
 use Drupal\field_ui\Tests\FieldUiTestBase;
 
@@ -19,7 +19,7 @@ abstract class RequiredApiTestBase extends FieldUiTestBase {
    *
    * @var array
    */
-  public static $modules = array('node', 'field_ui', 'field_test', 'required_api');
+  public static $modules = array('node', 'field_ui', 'field_test', 'required_api', 'required_api_test');
 
   function setUp() {
     parent::setUp();

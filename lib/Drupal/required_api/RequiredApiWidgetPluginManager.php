@@ -23,6 +23,16 @@ class RequiredApiWidgetPluginManager extends WidgetPluginManager {
   protected $requiredManager;
 
   /**
+   * Gets the required manager.
+   *
+   * @return \Drupal\required_api\RequiredManager $manager
+   *   The required manager to set.
+   */
+  public function getRequiredManager() {
+    return $this->requiredManager;
+  }
+
+  /**
    * Sets the required manager.
    *
    * @param \Drupal\required_api\RequiredManager $manager
