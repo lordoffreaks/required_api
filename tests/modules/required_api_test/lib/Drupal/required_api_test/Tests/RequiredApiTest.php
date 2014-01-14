@@ -25,114 +25,112 @@ class RequiredApiTest extends RequiredApiTestBase {
   }
 
   function setUp() {
+
     parent::setUp();
 
-    // Create random field name.
-    $this->field_label = $this->randomName(8);
-    $this->field_name_input =  strtolower($this->randomName(8));
-    $this->field_name = 'field_'. $this->field_name_input;
+    // Create a test field and instance.
+    $this->field_name = 'test';
 
-    // Create Basic page and Article node types.
-    $this->drupalCreateContentType(array('type' => 'page', 'name' => 'Basic page'));
-    $this->drupalCreateContentType(array('type' => 'article', 'name' => 'Article'));
+    entity_create('field_entity', array(
+      'name' => $this->field_name,
+      'entity_type' => 'node',
+      'type' => 'test_field'
+    ))->save();
 
-    // Create a vocabulary named "Tags".
-    $vocabulary = entity_create('taxonomy_vocabulary', array(
-      'name' => 'Tags',
-      'vid' => 'tags',
-      'langcode' => Language::LANGCODE_NOT_SPECIFIED,
+    $this->instance = entity_create('field_instance', array(
+      'field_name' => $this->field_name,
+      'entity_type' => 'node',
+      'bundle' => $this->type,
     ));
-    $vocabulary->save();
 
-    $field = array(
-      'name' => 'field_' . $vocabulary->id(),
-      'entity_type' => 'node',
-      'type' => 'taxonomy_term_reference',
-    );
-    entity_create('field_entity', $field)->save();
+    $this->instance->save();
 
-    $instance = array(
-      'field_name' => 'field_' . $vocabulary->id(),
-      'entity_type' => 'node',
-      'label' => 'Tags',
-      'bundle' => 'article',
-    );
-    entity_create('field_instance', $instance)->save();
+    $form_display = entity_get_form_display('node', $this->type, 'default');
+    $form_display->setComponent($this->field_name)->save();
 
-    entity_get_form_display('node', 'article', 'default')
-      ->setComponent('field_' . $vocabulary->id())
-      ->save();
+    $this->manager = $form_display->get('pluginManager')->getRequiredManager();
+
+    $this->admin_path = 'admin/structure/types/manage/' . $this->type . '/fields/' . $this->instance->id();
+
   }
 
   /**
    * Tests that default value is correctly validated and saved.
    */
-  function testDefaultValue() {
-    // Create a test field and instance.
-    $field_name = 'test';
-    entity_create('field_entity', array(
-      'name' => $field_name,
-      'entity_type' => 'node',
-      'type' => 'test_field'
-    ))->save();
-    $instance = entity_create('field_instance', array(
-      'field_name' => $field_name,
-      'entity_type' => 'node',
-      'bundle' => $this->type,
-    ));
-    $instance->save();
+  public function testExpectedPluginDefinitions() {
 
-    $form_display = entity_get_form_display('node', $this->type, 'default');
+    $expected_definitions = array(
+      // Core behavior plugin replacement.
+      'default',
+      // Testing plugins.
+      'required_true',
+    );
 
-    $form_display->setComponent($field_name)
-      ->save();
+    $diff = array_diff($this->manager->getDefinitionsIds(), $expected_definitions);
+    $this->assertEqual(array(), $diff, 'Definitions match expected.');
 
-    $definitions = $form_display->get('pluginManager')->getRequiredManager()->getDefinitions();
+  }
 
-    $this->assertEqual(array(), $definitions, 'no definitions');
-    $this->verbose("<pre>Definitions: " . print_r($definitions , 1). "</pre>");
+  /**
+   * Tests the default Required Plugin.
+   */
+  public function testRequiredDefaultPlugin() {
 
-    //$pluginManager = $form_display->get('pluginManager');
-    //$this->verbose("<pre>pluginManager methods: " . print_r(get_class_methods($pluginManager) , 1). "</pre>");
+    // Setting default (FALSE) and checking the form.
+    $this->_setRequiredPlugin('default', FALSE);
 
-    //$this->verbose("<pre>Form Display methods: " . print_r(get_class_methods($form_display) , 1). "</pre>");
-    //$this->verbose("<pre>Form Display: " . print_r($form_display , 1). "</pre>");
+    $add_path = 'node/add/' . $this->type;
+    $this->drupalGet($add_path);
+    $title = $this->randomString();
 
-    $admin_path = 'admin/structure/types/manage/' . $this->type . '/fields/' . $instance->id();
-    $element_id = "edit-default-value-input-$field_name-0-value";
-    $element_name = "default_value_input[{$field_name}][0][value]";
-    $this->drupalGet($admin_path);
-    $this->assertFieldById($element_id, '', 'The default value widget was empty.');
+    $edit = array(
+      'title[0][value]' => $title,
+    );
 
-    // Check that invalid default values are rejected.
-    $edit = array($element_name => '-1');
-    $this->drupalPostForm($admin_path, $edit, t('Save settings'));
-    $this->assertText("$field_name does not accept the value -1", 'Form vaildation failed.');
+    $this->drupalPostForm(NULL, $edit, t('Save'));
 
-    // Check that the default value is saved.
-    $edit = array($element_name => '1');
-    $this->drupalPostForm($admin_path, $edit, t('Save settings'));
-    $this->assertText("Saved $field_name configuration", 'The form was successfully submitted.');
-    field_info_cache_clear();
-    $instance = field_info_instance('node', $field_name, $this->type);
-    $this->assertEqual($instance->default_value, array(array('value' => 1)), 'The default value was correctly saved.');
+    $message = t('!label !title has been created.', array(
+        '!label' => $this->type_label,
+        '!title' => $title,
+      )
+    );
 
-    // Check that the default value shows up in the form
-    $this->drupalGet($admin_path);
-    $this->assertFieldById($element_id, '1', 'The default value widget was displayed with the correct value.');
+    $this->assertText($message);
+  }
 
-    // Check that the default value can be emptied.
-    $edit = array($element_name => '');
-    $this->drupalPostForm(NULL, $edit, t('Save settings'));
-    $this->assertText("Saved $field_name configuration", 'The form was successfully submitted.');
-    field_info_cache_clear();
-    $instance = field_info_instance('node', $field_name, $this->type);
-    $this->assertEqual($instance->default_value, NULL, 'The default value was correctly saved.');
+  /**
+   * Tests that default value is correctly validated and saved.
+   */
+  public function testRequiredTestTruePlugin() {
 
-    // Check that the default widget is used when the field is hidden.
-    entity_get_form_display($instance->entity_type, $instance->bundle, 'default')
-      ->removeComponent($field_name)->save();
-    $this->drupalGet($admin_path);
-    $this->assertFieldById($element_id, '', 'The default value widget was displayed when field is hidden.');
+    // Setting true and checking the form.
+    $this->_setRequiredPlugin('required_true', 1);
+    $this->drupalGet('node/add/' . $this->type);
+
+    $edit = array(
+      'title[0][value]' => $this->randomString(),
+    );
+
+    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->assertText(t('!field field is required.', array('!field' => $this->field_name)));
+  }
+
+  /**
+   * Helper function to set the required Plugin.
+   * @param [type] $plugin_id    [description]
+   * @param [type] $plugin_value [description]
+   */
+  public function _setRequiredPlugin($plugin_id, $plugin_value) {
+
+    //$this->drupalGet($this->admin_path);
+    $fieldname = "instance[settings][required_plugin]";
+
+    $edit = array(
+      $fieldname => $plugin_id,
+      'instance[required]' => $plugin_value,
+    );
+
+    $this->drupalPostForm($this->admin_path, $edit, t('Save settings'));
+
   }
 }

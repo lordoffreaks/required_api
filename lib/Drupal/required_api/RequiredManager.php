@@ -11,7 +11,7 @@ use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Language\LanguageManager;
 use Drupal\Core\Plugin\DefaultPluginManager;
-use Drupal\field\FieldInstanceInterface;
+use Drupal\Core\Field\FieldDefinitionInterface;
 
 /**
  * Manages required by role plugins.
@@ -33,7 +33,13 @@ class RequiredManager extends DefaultPluginManager {
    */
   public function getInstance(array $options) {
 
-    $plugin_id = $this->getPluginId($options['field_definition']);
+    if (isset($options['plugin_id'])) {
+      $plugin_id = $options['plugin_id'];
+    }
+    else {
+      $plugin_id = $this->getPluginId($options['field_definition']);
+    }
+
     $plugin = $this->createInstance($plugin_id, $options);
 
     return $plugin;
@@ -42,13 +48,13 @@ class RequiredManager extends DefaultPluginManager {
   /**
    * Gets the plugin_id for this field definition, fallback to system default.
    *
-   * @param \Drupal\field\FieldInstanceInterface $field
+   * @param \Drupal\field\FieldDefinitionInterface $field
    *   A field instance.
    *
    * @return string
    *   The plugin id.
    */
-  public function getPluginId(FieldInstanceInterface $field) {
+  public function getPluginId(FieldDefinitionInterface $field) {
 
     $plugin_id = $field->getSetting('required_plugin');
 
