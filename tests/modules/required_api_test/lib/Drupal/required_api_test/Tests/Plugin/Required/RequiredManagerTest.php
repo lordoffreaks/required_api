@@ -43,8 +43,7 @@ class RequiredManagerTest extends UnitTestCase {
     $language_manager = $this->getMock('Drupal\Core\Language\LanguageManager');
 
     $language_manager->expects($this->once())
-      ->method('getLanguage')
-      ->with(Language::TYPE_INTERFACE)
+      ->method('getCurrentLanguage')
       ->will($this->returnValue($language));
 
     $module_handler = $this->getMock('Drupal\Core\Extension\ModuleHandlerInterface');
