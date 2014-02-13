@@ -8,6 +8,7 @@
 namespace Drupal\required_api_test\Tests\Plugin\Required;
 
 use Drupal\Core\Language\Language;
+use Drupal\Core\Language\LanguageDefault;
 use Drupal\required_api\RequiredManager;
 use Drupal\Tests\UnitTestCase;
 
@@ -39,8 +40,12 @@ class RequiredManagerTest extends UnitTestCase {
       ->disableOriginalConstructor()
       ->getMock();
 
-    $language = new Language(array('id' => 'en'));
-    $language_manager = $this->getMock('Drupal\Core\Language\LanguageManager');
+    $language_settings = array('id' => 'en');
+    $language_default = new LanguageDefault($language_settings);
+    $language = new Language(array($language_settings));
+    $language_manager = $this->getMockBuilder('Drupal\Core\Language\LanguageManager')
+    ->setConstructorArgs(array($language_default))
+    ->getMock();
 
     $language_manager->expects($this->once())
       ->method('getCurrentLanguage')
