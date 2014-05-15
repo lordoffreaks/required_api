@@ -53,7 +53,7 @@ class RequiredManagerTest extends UnitTestCase {
 
     $module_handler = $this->getMock('Drupal\Core\Extension\ModuleHandlerInterface');
 
-    $this->requiredManager = new RequiredManager($namespaces, $cache_backend, $language_manager, $module_handler);
+    $this->requiredManager = new RequiredManager($namespaces, $cache_backend, $module_handler, $language_manager);
   }
 
   /**

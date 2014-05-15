@@ -14,6 +14,13 @@ use Drupal\required_api\Plugin\RequiredPluginInterface;
 abstract class RequiredBase extends PluginBase implements RequiredPluginInterface {
 
   /**
+   * The configuration entity's dependencies.
+   *
+   * @var array
+   */
+  protected $dependencies = array();
+
+  /**
    * Return a form element to use in form_field_ui_field_instance_edit_form.
    *
    * @param \Drupal\Core\Field\FieldDefinitionInterface $field
@@ -59,5 +66,15 @@ abstract class RequiredBase extends PluginBase implements RequiredPluginInterfac
    */
   public function defaultConfiguration() {
     return array();
+  }
+
+  /**
+   * Calculates dependencies for the configured plugin.
+   *
+   * @see \Drupal\Core\Config\Entity\ConfigDependencyManager
+   * @see \Drupal\Core\Config\Entity\ConfigEntityInterface::getConfigDependencyName()
+   */
+  public function calculateDependencies() {
+    return $this->dependencies;
   }
 }

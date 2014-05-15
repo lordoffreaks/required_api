@@ -36,11 +36,13 @@ function required_api_permission() {
  */
 function required_api_field_info_alter(&$info) {
 
-  foreach ($info as $field_type => $field_type_info) {
+  // dsm($info, 'info');
+
+/*  foreach ($info as $field_type => $field_type_info) {
     $info[$field_type]['instance_settings'] += array(
       'required_plugin' => NULL,
     );
-  }
+  }*/
 }
 
 /**

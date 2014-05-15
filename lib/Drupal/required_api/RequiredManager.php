@@ -21,9 +21,9 @@ class RequiredManager extends DefaultPluginManager {
   /**
    * DefaultPluginManager overriden.
    */
-  public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, LanguageManager $language_manager, ModuleHandlerInterface $module_handler) {
+  public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler, LanguageManager $language_manager) {
 
-    parent::__construct('Plugin/Required', $namespaces, 'Drupal\required_api\Annotation\Required');
+    parent::__construct('Plugin/Required', $namespaces, $module_handler, 'Drupal\required_api\Annotation\Required');
     $this->setCacheBackend($cache_backend, $language_manager, 'required_api_required_plugins');
 
   }
