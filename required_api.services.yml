@@ -7,6 +7,6 @@ services:
   # Replaces the core field.plugin service
   plugin.manager.field.widget:
     class: Drupal\required_api\RequiredApiWidgetPluginManager
-    arguments: ['@container.namespaces', '@cache.discovery', '@module_handler', '@language_manager', '@plugin.manager.field.field_type']
+    arguments: ['@container.namespaces', '@cache.discovery', '@module_handler', '@plugin.manager.field.field_type']
     calls:
     - [setRequiredManager, ['@plugin.manager.required_api.required']]
