@@ -1,7 +1,7 @@
 services:
   plugin.manager.required_api.required:
     class: Drupal\required_api\RequiredManager
-    arguments: ['@container.namespaces', '@cache.discovery', '@module_handler', '@language_manager']
+    arguments: ['@container.namespaces', '@cache.discovery', '@module_handler']
     #parent: default_plugin_manager
 
   # Replaces the core field.plugin service

@@ -40,20 +40,9 @@ class RequiredManagerTest extends UnitTestCase {
       ->disableOriginalConstructor()
       ->getMock();
 
-    $language_settings = array('id' => 'en');
-    $language_default = new LanguageDefault($language_settings);
-    $language = new Language(array($language_settings));
-    $language_manager = $this->getMockBuilder('Drupal\Core\Language\LanguageManager')
-    ->setConstructorArgs(array($language_default))
-    ->getMock();
-
-    $language_manager->expects($this->once())
-      ->method('getCurrentLanguage')
-      ->will($this->returnValue($language));
-
     $module_handler = $this->getMock('Drupal\Core\Extension\ModuleHandlerInterface');
 
-    $this->requiredManager = new RequiredManager($namespaces, $cache_backend, $module_handler, $language_manager);
+    $this->requiredManager = new RequiredManager($namespaces, $cache_backend, $module_handler);
   }
 
   /**

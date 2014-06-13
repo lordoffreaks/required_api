@@ -9,7 +9,6 @@ namespace Drupal\required_api;
 
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\Core\Language\LanguageManager;
 use Drupal\Core\Plugin\DefaultPluginManager;
 use Drupal\Core\Field\FieldDefinitionInterface;
 
@@ -21,10 +20,10 @@ class RequiredManager extends DefaultPluginManager {
   /**
    * DefaultPluginManager overriden.
    */
-  public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler, LanguageManager $language_manager) {
+  public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler) {
 
     parent::__construct('Plugin/Required', $namespaces, $module_handler, 'Drupal\required_api\Annotation\Required');
-    $this->setCacheBackend($cache_backend, $language_manager, 'required_api_required_plugins');
+    $this->setCacheBackend($cache_backend, 'required_api_required_plugins');
 
   }
 
