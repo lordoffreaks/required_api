@@ -8,6 +8,7 @@
 namespace Drupal\required_api\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Configure default required stratety for this site.
@@ -24,10 +25,10 @@ class RequiredDefaultPluginForm extends ConfigFormBase {
   /**
    * Required method to provide the actual form.
    */
-  public function buildForm(array $form, array &$form_state) {
+  public function buildForm(array $form, FormStateInterface $form_state) {
 
-    $required_manager = \Drupal::service('plugin.manager.required_api.required');
-    $plugins = $required_manager->getDefinitionsAsOptions();
+    $manager = \Drupal::service('plugin.manager.required_api.required');
+    $plugins = $manager->getDefinitionsAsOptions();
 
     $config = $this->configFactory->get('required_api.plugins');
     $plugin = $config->get('default_plugin');
@@ -45,10 +46,10 @@ class RequiredDefaultPluginForm extends ConfigFormBase {
   /**
    * Submit function for the form.
    */
-  public function submitForm(array &$form, array &$form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state) {
 
     $this->configFactory->get('required_api.plugins')
-      ->set('default_plugin', $form_state['values']['default_plugin'])
+      ->set('default_plugin', $form_state->getValue('default_plugin'))
       ->save();
 
     parent::submitForm($form, $form_state);

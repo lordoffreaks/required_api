@@ -5,6 +5,8 @@
  * required or not based on contexts.
  */
 
+use Drupal\Core\Form\FormStateInterface;
+
 /**
  * Implements hook_help().
  */
@@ -32,27 +34,13 @@ function required_api_permission() {
 }
 
 /**
- * Implements hook_field_info_alter().
- */
-function required_api_field_info_alter(&$info) {
-
-  // dsm($info, 'info');
-
-/*  foreach ($info as $field_type => $field_type_info) {
-    $info[$field_type]['instance_settings'] += array(
-      'required_plugin' => NULL,
-    );
-  }*/
-}
-
-/**
  * Implements hook_form_FORM_ID_alter().
  *
  * Applies to FORM_ID field_ui_field_instance_edit_form.
  */
-function required_api_form_field_ui_field_instance_edit_form_alter(&$form, $form_state) {
+function required_api_form_field_ui_field_instance_edit_form_alter(&$form, FormStateInterface $form_state) {
 
-  $field_definition = $form_state['instance'];
+  $field_definition = $form_state->get('instance');
   $field_name = $field_definition->getName();
 
   $manager = \Drupal::service('plugin.manager.required_api.required');
@@ -92,7 +80,11 @@ function required_api_form_field_ui_field_instance_edit_form_alter(&$form, $form
 
   }
 
-  $form['instance']['required'] = $plugin->formElement($field_definition);
+  $form['instance']['required']['#access'] = FALSE;
+
+  $element = $plugin->formElement($field_definition);
+  $form['instance']['required_plugin_options'] = $element;
+  $form['instance']['required_plugin_options']['#weight'] = $form['instance']['required']['#weight'];
 
   // Default value needs allways to be NOT required.
   $form['instance']['default_value'][$field_name]['widget'][0]['#required'] = FALSE;
@@ -107,5 +99,5 @@ function required_api_form_field_ui_field_instance_edit_form_alter(&$form, $form
  *   The rendered element.
  */
 function require_api_element_ajax_callback($form, $form_state) {
-  return $form['instance']['required'];
+  return $form['instance']['required_plugin_options'];
 }

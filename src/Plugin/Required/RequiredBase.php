@@ -36,6 +36,11 @@ abstract class RequiredBase extends PluginBase implements RequiredPluginInterfac
     return $element + array(
       '#prefix' => '<div id="required-ajax-wrapper">',
       '#suffix' => '</div>',
+      '#parents' => array(
+        'instance',
+        'settings',
+        'required_plugin_options'
+      ),
     );
   }
 
